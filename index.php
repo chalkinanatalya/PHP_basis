@@ -2,76 +2,93 @@
 
 //Task 1
 
-$question = readLine("Who is the original creator of PHP language? 1.Rasmus Lerdorf 2.James Gosling 3.Brendan Eich ");
-$flag = false;
+$arr_first = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+$arr_second = [9, 8, 7, 6, 5, 4, 3, 2, 1];
 
- do {
-    switch($question) {
-        case $question === "1":
-            echo "Great! $question is correct!";
-            $flag = true;
-            break;
-         case $question === "2":
-            echo "$question is incorrect! He was Java creator.";
-            $flag = true;
-            break;
-        case $question === "3":
-            echo "$question is incorrect! He was a JavaScript creator.";
-            $flag = true;
-            break;
-        default:
-            $question = readLine("Who is the original creator of PHP language? 1.Rasmus Lerdorf 2.James Gosling 3.Brendan Eich");
-    }
-} while (!$flag);
+$result_arr = array_map(function ($ind1, $ind2) {
+    return $ind1 * $ind2;
+}, $arr_first, $arr_second);
 
+var_dump($result_arr);
 
 //Task 2
-$name = readLine("Как тебя зовут?");
-$tasks_amount = (int)readLine("Сколько задач Вы запланировали на сегодня? Введите число.");
 
-if(gettype($tasks_amount) !== 0) {
-    echo "Нужно ввести корректное число";
-} else {
+$name = readline("Как тебя зовут?");
+$celebration = readline("Что празднуем?");
 
-    $current_task = '';
-    $current_time = null;
-    $total_time = null;
-    $tasks_array = [];
-    $times_array = [];
+function felicitation ($name, $celebration) {
+    $wishes = ["счастья", "здоровья", "благополучия", "терпения", "воображения", "достатка", "долголетия"];
+    $epithets = ["железного", "огромного", "прекрасного", "полного", "бесконечного", "золотого", "безудержного"];
 
+    $congrats = "";
+    $gaps = [", ", " и ", " "];
+    $selected_wishes = array_rand($wishes, 3);
+    $selected_epithets = array_rand($epithets, 3);
 
-    for($i = 0; $i < $tasks_amount; $i++) {
-        $current_task = readLine("Какая задача стоит перед вами сегодня?");
-        $current_time = (int)readLine("Сколько примерно времени эта задача займет?");
-
-        array_push($tasks_array, $current_task);
-        array_push($times_array, $current_time);
-
-        $total_time = array_sum($times_array);
+    for($i = 0; $i < count($selected_wishes); $i++) {
+        $congrats .= $epithets[$selected_epithets[$i]] . " " . $wishes[$selected_wishes[$i]] . $gaps[$i];
     }
 
-    echo "$name, сегодня у вас запланировано $tasks_amount приоритетных задачи на день:";
-
-    for($i = 0; $i < count($tasks_array); $i++) {
-            echo "- $tasks_array[$i] ({$times_array[$i]}ч)";
-    }
-
-    echo "Примерное время выполнения плана = {$total_time}ч";
-
+    return "Дорогой $name, в этот светлый праздник - $celebration, от всего сердца поздравляю тебя, желаю тебе $congrats!";
 }
 
+echo felicitation($name, $celebration);
 
 //Task 3
-$finger = (int)readLine("Введите число и я определю палец: ");
+$arr_half = [1,2,3,4,5,0,0,0,0,0];
+$double_arr = [];
 
-if(($finger - 1) % 8 === 0) {
-    echo "Большой палец";
-} elseif ($finger % 8 === 0 || $finger % 8 === 2) {
-    echo "Указательный палец";
-} elseif (($finger + 1) % 4 === 0) {
-    echo "Средний палец";
-} elseif ($finger % 8 === 4 || $finger % 8 === 6) {
-    echo "Безымянный палец";
-} elseif (($finger - 5) % 8 === 0) {
-    echo "Мизинец  палец";
-};
+for($i = 0, $j = 0; $i < 5; $i++, $j+=2) {
+    $double_arr[$j] = $arr_half[$i];
+    $double_arr[$j+1] = $arr_half[$i];
+}
+
+var_dump($double_arr);
+
+//Task 4
+$ranged_arr = range(1, 200);
+shuffle($ranged_arr);
+$random_arr = array_slice($ranged_arr, 100);
+
+var_dump($random_arr);
+
+//Task 5
+
+$students = [
+    'БАП1320' => [ 
+       "Смирнова Христина" => 3,
+       "Рогозин Даниил" => 2,
+       "Золин Владилен" => 3,
+       "Архаткина Владислава" => 3,
+       "Мещерякова Мария" => 3,
+       "Саврасова Фаина" => 3,
+       "Хромченко Зинаида" => 5,
+       "Протасова Майя" => 3,
+    ],
+    "ИТ720" => [
+       "Ябров Тимур" => 4,
+       "Белорусов Ефрем" => 4,
+       "Ягода Назар" => 2,
+       "Ярилова Розалия" => 4,
+       "Нырко Платон" => 2,
+       "Калинин Агап" => 4,
+       "Никифоров Юлиан" => 5
+    ],
+  ];
+
+  $avr_mark = ['БАП1320' => 0, "ИТ720" => 0];
+  $expelled_list = [];
+
+foreach($students as $group => $members) {
+    foreach($members as $member => $mark) {
+        $avr_mark[$group] += $mark;
+
+        if($mark < 3) {
+            $expelled_list[] = $member;
+        }
+    }
+    $avr_mark[$group] /= count($members);
+}
+
+print_r($avr_mark);
+print_r($expelled_list);
