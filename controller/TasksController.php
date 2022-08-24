@@ -4,7 +4,12 @@ require './model/User.php';
 
 session_start();
 
+if (!isset($_SESSION['username'])) {
+    header("Location: /?controller=security&action=logout");
+}
+
 $tasks = new TaskProvider();
+
 
 if(isset($_POST['description']))
 {
