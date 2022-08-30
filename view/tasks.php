@@ -1,22 +1,32 @@
-
-<!doctype html>
-<html lang="en">
+<?php
+/**
+ * @var Task $task
+ */
+?>
 <head>
     <meta charset="UTF-8">
-    <title>Список задач</title>
+    <title>Главная</title>
 </head>
+<body>
+<h1><?= $pageHeader ?></h1>
 
-<h2>Ваши задачи</h2>
-<form method="post" action="">
-    <input type="text" name="description" placeholder="Добавьте задачу">
-    <button type="submit" value="add">Добавить</button>
-</form><br>
-<?php if (isset($tasks)): ?>
-    <?php foreach ($tasks->getUndoneList() as $key => $task): ?>
-        * <?=$task->getDescription()?>  <a href="?action=delete&key=<?=$key?>">[X]</a> <br>
-    <?php endforeach; ?>
+<?php if (is_null($username)): ?>
+    <a href="/?controller=security">Войти</a>
 <?php else: ?>
-    Нет задач
-<?php endif; ?>
+    <?= $username ?> <a href="/?controller=security&action=logout">Выйти</a>
+    <a href="/">Главная</a>
+
+<?php endif; ?><br><br>
+<form action="/?controller=tasks&action=add" method="post">
+    <input type="text" name="task" placeholder="Опишите новую задачу">
+    <input type="submit" value="Добавить">
+</form>
+<?php foreach ($tasks as $key => $task): ?>
+    <div>
+        <?=$task->getDescription()?>
+        <a href="/?controller=tasks&action=done&key=<?=$key?>">[Done]</a><br><br>
+    </div>
+<?php endforeach; ?>
+
 
 </body>

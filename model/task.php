@@ -1,78 +1,42 @@
 <?php
 
-class Task {
+class Task
+{
     private string $description;
-    private DateTime $dateCreated;
-    private DateTime $dateUpdated;
-    private DateTime $dateDone;
-    private int $priority;
-    private bool $isDone;
-    private User $user;
-    private array $comments = [];
+    private bool $isDone = false;
 
-    function __construct(string $description, string $priority, User $user) 
+
+    public function __construct(string $description, bool $isDone = false)
     {
         $this->description = $description;
-        $this->priority = $priority;
-        $this->user = $user;
-        $this->isDone = false;
- 
-        $this->dateCreated = new DateTime(); 
+        $this->isDone = $isDone;
     }
 
-    public function addComment(User $author, string $text)
-    {
-        $comment = new Comment();
-        $comment->setAuthor($author);
-        $comment->setText($text);
-        $this->comments[] = $comment;
-    }
 
-    public function getDescription (): string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function getdateCreated (): DateTime {
-        return $this->dateCreated;
-    }
 
-    public function getdateUpdated (): DateTime {
-        return $this->dateUpdated;
-    }
-
-    public function getDateDone (): DateTime {
-        return $this->dateDone;
-    }
-
-    public function getPriority (): int 
+    public function setDescription(string $description): void
     {
-        return $this->priority;
+        $this->description = $description;
     }
 
-    public function getIsDone (): bool {
+
+    public function isDone(): bool
+    {
         return $this->isDone;
     }
 
-    public function getUser (): User {
-        return $this->user;
+
+    public function setIsDone(bool $isDone): void
+    {
+        $this->isDone = $isDone;
     }
 
-    public function getComments(): array 
-    {
-        return $this->comments;
-    }
 
-    public function setDescription (string $description): void
-    {
-        $this->description = $description;
-        $this->dateUpdated = new DateTime();
-    }
 
-    public function markAsDone (): void
-    {
-        $this-> isDone = true;
-        $this->dateDone = new DateTime();
-        $this->dateUpdated = new DateTime();
-    }
+
 }

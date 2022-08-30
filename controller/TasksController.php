@@ -1,21 +1,38 @@
 <?php
-require './model/taskProvider.php';
-require './model/User.php';
+include_once "model/Task.php";
+include_once "model/TaskProvider.php";
+include_once "model/User.php";
 
 session_start();
 
-if (!isset($_SESSION['username'])) {
-    header("Location: /?controller=security&action=logout");
+$pdo = require 'db.php';
+$pageHeader = "Задачи";
+
+//Получаем текущего пользователя, если он залогинен
+$username = null;
+if (isset($_SESSION['user'])) {
+    $username = $_SESSION['user']->getUsername();
+} else {
+    //Перенаправим на главную если пользователь не залогинен
+    header("Location: /");
+    die();
+}
+$taskProvider = new TaskProvider($pdo);
+
+//Сделаем метод добавления новой задачи и сохранения ее в сессии
+if (isset($_GET['action']) && $_GET['action'] === 'add') {
+    $taskText = strip_tags($_POST['task']);
+    $taskProvider->addTask(new Task($taskText));
+    header("Location: /?controller=tasks");
+    die();
 }
 
-$tasks = new TaskProvider();
-
-
-if(isset($_POST['description']))
-{
-    $username = $_SESSION['username']->getUsername();
-    $user = new User($username);
-    $tasks->addTask($_POST['description'], 1, $user);
+if (isset($_GET['action']) && $_GET['action'] === 'done') {
+    $key = $_GET['key'];
+    $taskProvider->deleteTask($key);
+    header("Location: /?controller=tasks");
+    die();
 }
 
+$tasks = $taskProvider->getUndoneList();
 include "view/tasks.php";
