@@ -1,9 +1,6 @@
 <?php
-
 class TaskProvider
 {
-    //хранилище задач
-    private array $tasks;
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -11,15 +8,11 @@ class TaskProvider
         $this->pdo = $pdo;
         //при создании хранилища читаем задачи из сессии
         $statement = $this->pdo->prepare(
-            'SELECT description, isDone FROM tasks'
+            'SELECT id, userId, description, isDone FROM tasks WHERE userId = :userId'
         );
-        $statement->execute();
-        $bufferTasks = $statement->fetchAll(PDO::FETCH_OBJ) ?: [];
-        $this->tasks = [];
-
-        foreach ($bufferTasks as $key => $task) {
-            $this->tasks[] = new Task($task->description, $task->isDone);
-        }
+        $statement->execute([
+            'userId' => $_SESSION['user']->getId(),
+        ]);
     }
 
 
@@ -32,12 +25,14 @@ class TaskProvider
         $tasks = [];
 
         $statement = $this->pdo->prepare(
-            'SELECT description, isDone FROM tasks WHERE isDone = 0'
+            'SELECT id, description, userId, isDone FROM tasks WHERE isDone = 0 AND userId = :userId'
         );
-        $statement->execute();
+        $statement->execute([
+            'userId' => $_SESSION['user']->getId(),
+        ]);
         $bufferTasks = $statement->fetchAll(PDO::FETCH_OBJ) ?: [];
-        foreach ($bufferTasks as $key => $task) {
-            $tasks[] = new Task($task->description, $task->isDone);
+        foreach ($bufferTasks as $task) {
+            $tasks[] = new Task($task->description, $task->userId, $task->id, $task->isDone,);
         }
 
         return $tasks;
@@ -46,15 +41,14 @@ class TaskProvider
     public function addTask(Task $task): void
     {
         $statement = $this->pdo->prepare(
-            'INSERT INTO tasks (description, isDone) VALUES (:description, :isDone)'
+            'INSERT INTO tasks (description, isDone, userId) VALUES (:description, :isDone, :userId)'
         );
 
         $statement->execute([
             'description' => $task->getDescription(),
-            'isDone' => $task->isDone() ? 1 : 0
+            'isDone' => $task->isDone() ? 1 : 0,
+            'userId' => $task->getUserId(),
         ]);
-
-        $this->tasks[] = $task;
     }
 
     public function deleteTask(int $key): void

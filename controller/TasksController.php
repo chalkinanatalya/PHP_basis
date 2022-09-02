@@ -22,7 +22,7 @@ $taskProvider = new TaskProvider($pdo);
 //Сделаем метод добавления новой задачи и сохранения ее в сессии
 if (isset($_GET['action']) && $_GET['action'] === 'add') {
     $taskText = strip_tags($_POST['task']);
-    $taskProvider->addTask(new Task($taskText));
+    $taskProvider->addTask(new Task($taskText, $_SESSION['user']->getId()));
     header("Location: /?controller=tasks");
     die();
 }
