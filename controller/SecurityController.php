@@ -40,6 +40,7 @@ if (isset($_POST['name'], $_POST['username'], $_POST['password']) && $_GET['acti
     $user->setName($name);
     $userProvider = new UserProvider($pdo);
     $userProvider->registerUser($user, $password);
+    $user = $userProvider->getByUsernameAndPassword($username, $password);
 
     $_SESSION['user'] = $user;
     header("Location: index.php");
