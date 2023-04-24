@@ -13,6 +13,7 @@ $pdo->exec('CREATE TABLE users (
 
 $pdo->exec('CREATE TABLE tasks (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  userId INTEGER NOT NULL,
   description VARCHAR(150),
   isDone TINYINT(100) NOT NULL
 )');
